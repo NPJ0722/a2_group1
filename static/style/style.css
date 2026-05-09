@@ -1,0 +1,234 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    color: #111;
+    margin: 0;
+    padding: 0;
+}
+
+/* Top banner */
+.top-banner {
+    background-color: #eceae6;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #fff;
+}
+
+.navbar-brand {
+    letter-spacing: -0.5px;
+    color: #111 !important;
+}
+
+.nav-link {
+    color: #333 !important;
+    font-weight: 500;
+}
+
+.nav-link.active {
+    color: #111 !important;
+    font-weight: 700;
+}
+
+.nav-right-group {
+    min-width: fit-content;
+}
+
+.search-box {
+    border: 1px solid #cfcfcf;
+    border-radius: 999px;
+    background-color: #fff;
+    min-width: 240px;
+    height: 44px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-size: 0.95rem;
+}
+
+.icon-link {
+    color: #111;
+    font-size: 1.2rem;
+    text-decoration: none;
+}
+
+.icon-link:hover {
+    color: #444;
+}
+
+/* Hero */
+.hero-section {
+    min-height: 72vh;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+        url("https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1800&q=80");
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-content {
+    max-width: 700px;
+}
+
+.hero-subtitle {
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.hero-title {
+    font-size: clamp(2.8rem, 7vw, 5.8rem);
+    font-weight: 500;
+    line-height: 0.95;
+}
+
+.hero-text {
+    font-size: 1.1rem;
+    max-width: 560px;
+}
+
+.hero-btn {
+    background-color: #fff;
+    color: #111;
+    border-radius: 999px;
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    border: none;
+}
+
+.hero-btn:hover {
+    background-color: #f0f0f0;
+    color: #111;
+}
+
+/* Section heading */
+.section-heading h2 {
+    font-size: 2rem;
+}
+
+/* Festival cards */
+.festival-card {
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+}
+
+.festival-poster {
+    width: 100%;
+    height: 340px;
+    object-fit: cover;
+    object-position: top;
+}
+
+.card-body {
+    padding: 1.1rem;
+}
+
+.card-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    min-height: 58px;
+    color: #111;
+}
+
+.meta {
+    margin-bottom: 0.45rem;
+    font-size: 0.95rem;
+}
+
+.description {
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    color: #444;
+    min-height: 95px;
+    line-height: 1.5;
+}
+
+.category-badge {
+    background-color: #e9ecef;
+    color: #333;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn-dark {
+    border-radius: 10px;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+}
+
+/* Footer */
+.footer-section {
+    background-color: #eceae6;
+    color: #333;
+}
+
+/* Event details */
+.event-detail-image {
+    width: 100%;
+    max-height: 760px;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.event-lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.event-info-card {
+    background-color: #ffffff;
+    border-radius: 18px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.event-info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid #ececec;
+}
+
+.event-label {
+    font-weight: 700;
+    min-width: 120px;
+}
+
+.quick-facts-card {
+    background-color: #f8f8f8;
+    border-radius: 18px;
+    padding: 1.5rem;
+    border: 1px solid #ececec;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .festival-poster {
+        height: 300px;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .event-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
