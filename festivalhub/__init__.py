@@ -20,6 +20,9 @@ def create_app():
     login_manager.login_view = 'main.login'
     login_manager.login_message = 'Please login before continuing.'
 
+    # Load models so Flask-Login can find user_loader
+    from . import models
+
     from .views import mainbp
     app.register_blueprint(mainbp)
 
