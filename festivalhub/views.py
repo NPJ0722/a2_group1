@@ -28,9 +28,16 @@ def bookings():
     return render_template('booking-history.html')
 
 
+# General Login / Register
 @mainbp.route('/login')
 def login():
-    return render_template('login.html')
+    return render_template('login.html', next_page='/')
+
+
+# Login required before booking
+@mainbp.route('/login-booking')
+def login_booking():
+    return render_template('login.html', next_page='/booking')
 
 
 @mainbp.route('/logout')
