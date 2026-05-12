@@ -232,3 +232,18 @@ body {
         align-items: flex-start;
     }
 }
+
+.acknowledgement-section {
+    background-color: #f8f5ef;
+    border: 1px solid #e4d9c8;
+}
+
+.acknowledgement-note {
+    background-color: #ffffff;
+    border-left: 4px solid #c79b5d;
+}
+
+.acknowledgement-preview{
+    background-color: #f8f5ef;
+    border: 1px solid #e4d9c8;
+}
