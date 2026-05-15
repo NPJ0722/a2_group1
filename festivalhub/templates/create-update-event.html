@@ -83,9 +83,10 @@
 
                     <div class="card-body p-4 p-md-5">
 
-                        <form>
+                        <form method="POST">
 
-                            <!-- Basic Event Details -->
+                            {{ form.hidden_tag() }}
+
                             <section class="mb-5">
 
                                 <h3 class="fw-bold mb-4">
@@ -96,49 +97,38 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Event Name</label>
-                                        <input type="text" class="form-control form-control-lg"
-                                            placeholder="Enter event name">
+                                        {{ form.name(class="form-control form-control-lg") }}
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Category</label>
-                                        <select class="form-select form-select-lg">
-                                            <option selected>Select category</option>
-                                            <option>Music Festival</option>
-                                            <option>Indie</option>
-                                            <option>Pop</option>
-                                            <option>Hip Hop</option>
-                                            <option>Accessible Festival</option>
-                                            <option>Tour</option>
-                                        </select>
+                                        {{ form.category(class="form-select form-select-lg") }}
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Event Date</label>
-                                        <input type="date" class="form-control form-control-lg">
+                                        {{ form.date(class="form-control form-control-lg", type="date") }}
                                     </div>
 
                                     <div class="col-md-3">
                                         <label class="form-label">Start Time</label>
-                                        <input type="time" class="form-control form-control-lg">
+                                        {{ form.start_time(class="form-control form-control-lg", type="time") }}
                                     </div>
 
                                     <div class="col-md-3">
                                         <label class="form-label">End Time</label>
-                                        <input type="time" class="form-control form-control-lg">
+                                        {{ form.end_time(class="form-control form-control-lg", type="time") }}
                                     </div>
 
                                     <div class="col-12">
                                         <label class="form-label">Description</label>
-                                        <textarea class="form-control" rows="5"
-                                            placeholder="Enter a full description of the event"></textarea>
+                                        {{ form.description(class="form-control", rows="5") }}
                                     </div>
 
                                 </div>
 
                             </section>
 
-                            <!-- Venue and Artist Information -->
                             <section class="mb-5">
 
                                 <h3 class="fw-bold mb-4">
@@ -149,27 +139,23 @@
 
                                     <div class="col-md-6">
                                         <label class="form-label">Venue Name</label>
-                                        <input type="text" class="form-control form-control-lg"
-                                            placeholder="Enter venue name">
+                                        {{ form.venue(class="form-control form-control-lg") }}
                                     </div>
 
                                     <div class="col-md-6">
                                         <label class="form-label">Location</label>
-                                        <input type="text" class="form-control form-control-lg"
-                                            placeholder="Enter event location">
+                                        {{ form.location(class="form-control form-control-lg") }}
                                     </div>
 
                                     <div class="col-12">
                                         <label class="form-label">Artist / Line-up</label>
-                                        <textarea class="form-control" rows="4"
-                                            placeholder="Enter artist names or full line-up"></textarea>
+                                        {{ form.artist_lineup(class="form-control", rows="4") }}
                                     </div>
 
                                 </div>
 
                             </section>
 
-                            <!-- Acknowledgement of Country -->
                             <section class="mb-5">
 
                                 <div class="acknowledgement-section p-4 rounded-4">
@@ -187,22 +173,17 @@
 
                                         <div class="col-md-6">
                                             <label class="form-label">Acknowledgement Type</label>
-                                            <select class="form-select form-select-lg">
-                                                <option>No Acknowledgement of Country</option>
-                                                <option>Generic Acknowledgement</option>
-                                                <option selected>Enhanced Acknowledgement</option>
-                                            </select>
+                                            {{ form.acknowledgement_type(class="form-select form-select-lg") }}
                                         </div>
 
                                         <div class="col-md-6">
                                             <label class="form-label">Traditional Custodians</label>
-                                            <input type="text" class="form-control form-control-lg"
-                                                placeholder="Enter Traditional Custodians">
+                                            {{ form.traditional_custodians(class="form-control form-control-lg") }}
                                         </div>
 
                                         <div class="col-12">
                                             <label class="form-label">Acknowledgement Statement</label>
-                                            <textarea class="form-control" rows="4">FestivalHub acknowledges the Traditional Custodians of the land on which this event takes place and pays respect to Elders past and present.</textarea>
+                                            {{ form.acknowledgement_statement(class="form-control", rows="4") }}
                                         </div>
 
                                         <div class="col-12">
@@ -219,8 +200,7 @@
 
                                                 <p class="text-muted small mb-0">
                                                     Enhanced acknowledgements should be specific, respectful, and
-                                                    supported by research. Avoid tokenistic, inaccurate, or culturally
-                                                    inappropriate statements.
+                                                    supported by research.
                                                 </p>
 
                                             </div>
@@ -233,7 +213,6 @@
 
                             </section>
 
-                            <!-- Ticketing and Status -->
                             <section class="mb-5">
 
                                 <h3 class="fw-bold mb-4">
@@ -244,39 +223,33 @@
 
                                     <div class="col-md-4">
                                         <label class="form-label">Ticket Type</label>
-                                        <select class="form-select form-select-lg">
-                                            <option selected>General Admission</option>
-                                            <option>VIP Pass</option>
-                                            <option>Student Ticket</option>
-                                        </select>
+                                        {{ form.ticket_type(class="form-select form-select-lg") }}
                                     </div>
 
                                     <div class="col-md-4">
                                         <label class="form-label">Tickets Available</label>
-                                        <input type="number" class="form-control form-control-lg"
-                                            placeholder="Enter quantity">
+                                        {{ form.tickets_available(class="form-control form-control-lg") }}
                                     </div>
 
                                     <div class="col-md-4">
                                         <label class="form-label">Ticket Price</label>
-                                        <input type="number" class="form-control form-control-lg"
-                                            placeholder="Enter ticket price">
+                                        {{ form.price(class="form-control form-control-lg") }}
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <label class="form-label">Event Status</label>
-                                        <input type="text" class="form-control form-control-lg" value="Open" readonly>
-                                        <small class="text-muted">
-                                            Status is automatically managed by the system based on event date, ticket
-                                            availability, and cancellation status.
-                                        </small>
+                                    <div class="mb-4">
+                                        <label for="status" class="form-label">Event Status</label>
+                                        <select class="form-select" id="status" name="status" required>
+                                            <option value="Open">Open</option>
+                                            <option value="Inactive">Inactive</option>
+                                            <option value="Sold out">Sold out</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                        </select>
                                     </div>
 
                                 </div>
 
                             </section>
 
-                            <!-- Event Image -->
                             <section class="mb-5">
 
                                 <h3 class="fw-bold mb-4">
@@ -285,46 +258,21 @@
 
                                 <div class="row g-4">
 
-                                    <div class="col-md-6">
-                                        <label class="form-label">Upload Event Image</label>
-                                        <input type="file" class="form-control form-control-lg">
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label">Or Image URL</label>
-                                        <input type="url" class="form-control form-control-lg"
-                                            placeholder="Paste image URL here">
+                                    <div class="col-md-12">
+                                        <label class="form-label">Image URL</label>
+                                        {{ form.image(class="form-control form-control-lg") }}
                                     </div>
 
                                 </div>
 
                             </section>
 
-                            <!-- Buttons -->
                             <div class="d-flex flex-wrap gap-3">
-
-                                <a href="/" class="btn btn-dark btn-lg">
-                                    Create Event
-                                </a>
+                                {{ form.submit(class="btn btn-dark btn-lg") }}
 
                                 <a href="/" class="btn btn-outline-dark btn-lg">
-                                    Update Event
-                                </a>
-
-                                <a href="/" class="btn btn-outline-danger btn-lg">
-                                    Cancel Event
-                                </a>
-
-                                <a href="/" class="btn btn-light btn-lg border">
                                     Back to Home
                                 </a>
-
-                            </div>
-
-                            <div class="alert alert-light border mt-4 mb-0">
-                                <strong>Prototype note:</strong>
-                                This page demonstrates the create, update, and cancel event interface.
-                                In the Flask version, this form can be connected to database routes.
                             </div>
 
                         </form>

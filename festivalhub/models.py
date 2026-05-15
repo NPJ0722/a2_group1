@@ -20,7 +20,15 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False)
     street_address = db.Column(db.String(255), nullable=False)
 
-    bookings = db.relationship('Booking', backref='user', lazy=True)
+    bookings = db.relationship(
+        'Booking',
+        backref='user',
+        lazy=True,
+        cascade='all, delete-orphan'
+    )
+
+    def __repr__(self):
+        return f'<User {self.email}>'
 
 
 class Event(db.Model):
@@ -42,15 +50,34 @@ class Event(db.Model):
     ticket_type = db.Column(db.String(80), default='General Admission')
     tickets_available = db.Column(db.Integer, default=0)
     price = db.Column(db.Float, default=0.0)
+
     status = db.Column(db.String(30), default='Open')
     image = db.Column(db.String(255))
 
-    acknowledgement_type = db.Column(db.String(80), default='No Acknowledgement of Country')
+    acknowledgement_type = db.Column(
+        db.String(80),
+        default='No Acknowledgement of Country'
+    )
+
     traditional_custodians = db.Column(db.String(150))
     acknowledgement_statement = db.Column(db.Text)
 
-    bookings = db.relationship('Booking', backref='event', lazy=True)
-    comments = db.relationship('Comment', backref='event', lazy=True)
+    bookings = db.relationship(
+        'Booking',
+        backref='event',
+        lazy=True,
+        cascade='all, delete-orphan'
+    )
+
+    comments = db.relationship(
+        'Comment',
+        backref='event',
+        lazy=True,
+        cascade='all, delete-orphan'
+    )
+
+    def __repr__(self):
+        return f'<Event {self.name}>'
 
 
 class Booking(db.Model):
@@ -58,14 +85,27 @@ class Booking(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable=False
+    )
+
+    event_id = db.Column(
+        db.Integer,
+        db.ForeignKey('events.id'),
+        nullable=False
+    )
 
     ticket_quantity = db.Column(db.Integer, nullable=False)
     ticket_price = db.Column(db.Float, nullable=False)
     booking_fee = db.Column(db.Float, default=0.0)
     total_price = db.Column(db.Float, nullable=False)
+
     booking_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Booking {self.id}>'
 
 
 class Comment(db.Model):
@@ -73,8 +113,15 @@ class Comment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    event_id = db.Column(
+        db.Integer,
+        db.ForeignKey('events.id'),
+        nullable=False
+    )
 
     user_name = db.Column(db.String(120), nullable=False)
     comment_text = db.Column(db.Text, nullable=False)
     posted_time = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Comment {self.id}>'
