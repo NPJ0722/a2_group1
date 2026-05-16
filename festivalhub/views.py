@@ -85,12 +85,31 @@ def seed_events():
     return redirect(url_for('main.booking_select'))
 
 
-@mainbp.route('/details')
+@mainbp.route('/details', methods=['GET', 'POST'])
 def details():
     event = Event.query.first()
     comment_form = CommentForm()
-    comments = Comment.query.all()
-    return render_template('event-details.html', event=event, comment_form=comment_form, comments=comments)
+
+    if request.method == 'POST':
+        new_comment = Comment(
+            event_id=event.id,
+            user_name=request.form['user_name'],
+            comment_text=request.form['comment_text']
+        )
+
+        db.session.add(new_comment)
+        db.session.commit()
+
+        return redirect(url_for('main.details'))
+
+    comments = Comment.query.filter_by(event_id=event.id).all()
+
+    return render_template(
+        'event-details.html',
+        event=event,
+        comment_form=comment_form,
+        comments=comments
+    )
 
 
 @mainbp.route('/create', methods=['GET', 'POST'])
@@ -181,30 +200,43 @@ def login():
     register_form = RegisterForm()
     next_page = request.args.get('next', '/')
 
-    if login_form.validate_on_submit():
-        user = User.query.filter_by(email=login_form.email.data).first()
+    if request.method == 'POST':
+        form_type = request.form.get('form_type')
 
-        if user and check_password_hash(user.password, login_form.password.data):
-            login_user(user)
+        if form_type == 'login':
+            user = User.query.filter_by(email=request.form['email']).first()
+
+            if user and check_password_hash(user.password, request.form['password']):
+                login_user(user)
+                return redirect(next_page)
+
+        if form_type == 'register':
+            existing_user = User.query.filter_by(email=request.form['email']).first()
+
+            if existing_user:
+                return redirect(url_for('main.login', next=next_page))
+
+            new_user = User(
+                first_name=request.form['first_name'],
+                last_name=request.form['last_name'],
+                phone=request.form['phone'],
+                email=request.form['email'],
+                password=generate_password_hash(request.form['password']),
+                street_address=request.form['street_address']
+            )
+
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
+
             return redirect(next_page)
 
-    if register_form.validate_on_submit():
-        new_user = User(
-            first_name=register_form.first_name.data,
-            last_name=register_form.last_name.data,
-            phone=register_form.phone.data,
-            email=register_form.email.data,
-            password=generate_password_hash(register_form.password.data),
-            street_address=register_form.street_address.data
-        )
-
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user)
-
-        return redirect(next_page)
-
-    return render_template('login.html', login_form=login_form, register_form=register_form, next_page=next_page)
+    return render_template(
+        'login.html',
+        login_form=login_form,
+        register_form=register_form,
+        next_page=next_page
+    )
 
 
 @mainbp.route('/login-booking', methods=['GET', 'POST'])

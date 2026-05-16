@@ -24,37 +24,11 @@
 
             <div class="navbar-collapse">
                 <ul class="navbar-nav mx-auto gap-lg-3">
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            Festivals
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/create">
-                            Create Event
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/login">
-                            Login / Register
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login-booking">
-                            Booking
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/bookings">
-                            Booking History
-                        </a>
-                    </li>
-
+                    <li class="nav-item"><a class="nav-link" href="/">Festivals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/create">Create Event</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/login">Login / Register</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/booking">Booking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/bookings">Booking History</a></li>
                 </ul>
             </div>
 
@@ -65,7 +39,6 @@
 
         <div class="text-center mb-5">
             <h1 class="fw-bold display-4">Login</h1>
-
             <p class="text-muted">
                 Login or register to manage bookings, create events, and access account features.
             </p>
@@ -73,81 +46,69 @@
 
         <div class="row g-4">
 
-            <!-- LOGIN -->
             <div class="col-lg-5">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body p-5">
 
-                        <h2 class="fw-bold mb-4">
-                            Login
-                        </h2>
+                        <h2 class="fw-bold mb-4">Login</h2>
 
                         <p class="text-muted mb-4">
                             Login to continue using your FestivalHub account.
                         </p>
 
-                        <form>
+                        <form method="POST">
+                            {{ login_form.hidden_tag() }}
+
+                            <input type="hidden" name="form_type" value="login">
 
                             <div class="mb-4">
-                                <label class="form-label fw-semibold">
-                                    Email Address
-                                </label>
-
-                                <input type="email" class="form-control form-control-lg" placeholder="Enter your email">
+                                <label class="form-label fw-semibold">Email Address</label>
+                                <input type="email" name="email" class="form-control form-control-lg"
+                                    placeholder="Enter your email" required>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-semibold">
-                                    Password
-                                </label>
-
-                                <input type="password" class="form-control form-control-lg"
-                                    placeholder="Enter password">
+                                <label class="form-label fw-semibold">Password</label>
+                                <input type="password" name="password" class="form-control form-control-lg"
+                                    placeholder="Enter password" required>
                             </div>
 
-                            <a href="{{ next_page }}" class="btn btn-dark btn-lg w-100">
+                            <button type="submit" class="btn btn-dark btn-lg w-100">
                                 Continue
-                            </a>
-
+                            </button>
                         </form>
 
                     </div>
                 </div>
             </div>
 
-            <!-- REGISTER -->
             <div class="col-lg-7">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body p-5">
 
-                        <h2 class="fw-bold mb-4">
-                            Create Account
-                        </h2>
+                        <h2 class="fw-bold mb-4">Create Account</h2>
 
                         <p class="text-muted mb-4">
                             Register a FestivalHub account to book tickets and create events.
                         </p>
 
-                        <form>
+                        <form method="POST">
+                            {{ register_form.hidden_tag() }}
+
+                            <input type="hidden" name="form_type" value="register">
 
                             <div class="row">
 
                                 <div class="col-md-6 mb-4">
-                                    <label class="form-label fw-semibold">
-                                        First Name
-                                    </label>
-
-                                    <input type="text" class="form-control form-control-lg"
-                                        placeholder="Enter first name">
+                                    <label class="form-label fw-semibold">First Name</label>
+                                    <input type="text" name="first_name" class="form-control form-control-lg"
+                                        placeholder="Enter first name" required>
                                 </div>
 
                                 <div class="col-md-6 mb-4">
-                                    <label class="form-label fw-semibold">
-                                        Last Name
-                                    </label>
-
-                                    <input type="text" class="form-control form-control-lg"
-                                        placeholder="Enter last name">
+                                    <label class="form-label fw-semibold">Last Name</label>
+                                    <input type="text" name="last_name" class="form-control form-control-lg"
+                                        placeholder="Enter last name" required>
                                 </div>
 
                             </div>
@@ -155,45 +116,34 @@
                             <div class="row">
 
                                 <div class="col-md-6 mb-4">
-                                    <label class="form-label fw-semibold">
-                                        Phone Number
-                                    </label>
-
-                                    <input type="text" class="form-control form-control-lg"
-                                        placeholder="Enter phone number">
+                                    <label class="form-label fw-semibold">Phone Number</label>
+                                    <input type="text" name="phone" class="form-control form-control-lg"
+                                        placeholder="Enter phone number" required>
                                 </div>
 
                                 <div class="col-md-6 mb-4">
-                                    <label class="form-label fw-semibold">
-                                        Email Address
-                                    </label>
-
-                                    <input type="email" class="form-control form-control-lg" placeholder="Enter email">
+                                    <label class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" name="email" class="form-control form-control-lg"
+                                        placeholder="Enter email" required>
                                 </div>
 
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-semibold">
-                                    Street Address
-                                </label>
-
-                                <input type="text" class="form-control form-control-lg" placeholder="Enter address">
+                                <label class="form-label fw-semibold">Street Address</label>
+                                <input type="text" name="street_address" class="form-control form-control-lg"
+                                    placeholder="Enter address" required>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-semibold">
-                                    Password
-                                </label>
-
-                                <input type="password" class="form-control form-control-lg"
-                                    placeholder="Create password">
+                                <label class="form-label fw-semibold">Password</label>
+                                <input type="password" name="password" class="form-control form-control-lg"
+                                    placeholder="Create password" required>
                             </div>
 
-                            <a href="{{ next_page }}" class="btn btn-dark btn-lg w-100">
+                            <button type="submit" class="btn btn-dark btn-lg w-100">
                                 Create Account & Continue
-                            </a>
-
+                            </button>
                         </form>
 
                     </div>
