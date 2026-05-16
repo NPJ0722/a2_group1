@@ -61,8 +61,9 @@
 
             <div class="col-lg-7">
                 {% if event.image %}
-                <img src="{{ url_for('static', filename='img/' + event.image) }}" alt="{{ event.name }} Poster"
-                    class="img-fluid rounded-4 shadow-sm event-detail-image">
+                <img src="{{ url_for('static', filename='img/' + event.image) }}"
+                     alt="{{ event.name }} Poster"
+                     class="img-fluid rounded-4 shadow-sm event-detail-image">
                 {% endif %}
             </div>
 
@@ -137,43 +138,20 @@
 
                 <div class="d-grid gap-2 d-md-flex">
 
-                    <button type="button" class="btn btn-dark btn-lg" data-bs-toggle="modal"
-                        data-bs-target="#bookingModal">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('main.booking', event_id=event.id) }}" class="btn btn-dark btn-lg">
+                        Book Tickets
+                    </a>
+                    {% else %}
+                    <button type="button" class="btn btn-dark btn-lg" data-bs-toggle="modal" data-bs-target="#loginRequiredModal">
                         Book Tickets
                     </button>
+                    {% endif %}
 
                     <a href="/" class="btn btn-outline-dark btn-lg">
                         Back
                     </a>
 
-                </div>
-
-                <div class="modal fade" id="bookingModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content rounded-4 border-0">
-                            <div class="modal-header">
-                                <h5 class="modal-title fw-bold">Login Required</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-
-                            <div class="modal-body">
-                                Please log in before booking this event.
-                            </div>
-
-                            <div class="modal-footer">
-
-                                <a href="{{ url_for('main.booking', event_id=event.id) }}" class="btn btn-outline-dark">
-                                    OK
-                                </a>
-
-                                <a href="{{ url_for('main.login', next=url_for('main.booking', event_id=event.id)) }}"
-                                    class="btn btn-dark">
-                                    Login Now
-                                </a>
-
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
             </div>
@@ -260,15 +238,10 @@
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-2">
-                            {{ comment.user_name }}
+                            {{ comment.name }}
                         </h5>
-
-                        <small class="text-muted">
-                            {{ comment.posted_time }}
-                        </small>
-
-                        <p class="mb-0 mt-3">
-                            {{ comment.comment_text }}
+                        <p class="mb-0">
+                            {{ comment.content }}
                         </p>
                     </div>
                 </div>
@@ -285,27 +258,23 @@
                             Share your thoughts about this event.
                         </p>
 
-                        <form method="POST">
-                            {{ comment_form.hidden_tag() }}
-
+                        <form>
                             <div class="row g-3">
 
                                 <div class="col-md-6">
                                     <label class="form-label">Name</label>
-                                    <input type="text" name="user_name" class="form-control form-control-lg"
-                                        placeholder="Enter your name" required>
+                                    <input type="text" class="form-control form-control-lg" placeholder="Enter your name">
                                 </div>
 
                                 <div class="col-12">
                                     <label class="form-label">Comment</label>
-                                    <textarea name="comment_text" class="form-control" rows="5"
-                                        placeholder="Write your comment here" required></textarea>
+                                    <textarea class="form-control" rows="5" placeholder="Write your comment here"></textarea>
                                 </div>
 
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-dark btn-lg">
+                                    <a href="#" class="btn btn-dark btn-lg">
                                         Post Comment
-                                    </button>
+                                    </a>
                                 </div>
 
                             </div>
