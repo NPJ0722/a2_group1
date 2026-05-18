@@ -56,8 +56,13 @@
                         <input type="text" placeholder="Search festivals">
                     </div>
 
-                    <a href="#" class="icon-link"><i class="bi bi-globe2"></i></a>
-                    <span class="small text-nowrap d-none d-md-inline">Australia (AUD)</span>
+                    <a href="#" class="icon-link">
+                        <i class="bi bi-globe2"></i>
+                    </a>
+
+                    <span class="small text-nowrap d-none d-md-inline">
+                        Australia (AUD)
+                    </span>
 
                     <a href="/login" class="btn btn-outline-dark rounded-pill px-3">
                         <i class="bi bi-person-circle me-1"></i> Login
@@ -74,12 +79,21 @@
     <header class="hero-section text-white d-flex align-items-end">
         <div class="container px-4 pb-5">
             <div class="hero-content">
-                <p class="hero-subtitle mb-2">Live music events across Australia</p>
-                <h1 class="hero-title mb-3">Zero hassle, better festivals.</h1>
+                <p class="hero-subtitle mb-2">
+                    Live music events across Australia
+                </p>
+
+                <h1 class="hero-title mb-3">
+                    Zero hassle, better festivals.
+                </h1>
+
                 <p class="hero-text mb-4">
                     Browse music festivals, discover tours, and find your next unforgettable live event.
                 </p>
-                <a href="#events" class="btn hero-btn">Explore Festivals</a>
+
+                <a href="#events" class="btn hero-btn">
+                    Explore Festivals
+                </a>
             </div>
         </div>
     </header>
@@ -87,7 +101,9 @@
     <main class="container py-5" id="events">
 
         <div class="section-heading text-center mb-4">
-            <h2 class="fw-bold">Featured Festivals & Tours</h2>
+            <h2 class="fw-bold">
+                Featured Festivals & Tours
+            </h2>
 
             <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
                 <span class="badge rounded-pill px-3 py-2 text-bg-dark">All</span>
@@ -102,171 +118,87 @@
 
         <div class="row g-4">
 
+            {% for event in events %}
+
             <div class="col-sm-6 col-xl-3">
                 <div class="card festival-card h-100">
-                    <img src="{{ url_for('static', filename='img/The Swell Sessions.png') }}"
-                        class="card-img-top festival-poster" alt="The Swell Sessions Poster">
+
+                    {% if event.image %}
+                    <img src="{{ url_for('static', filename='img/' + event.image) }}"
+                         class="card-img-top festival-poster"
+                         alt="{{ event.name }} Poster">
+                    {% endif %}
+
                     <div class="card-body d-flex flex-column">
+
                         <div class="mb-2 d-flex gap-2 flex-wrap">
-                            <span class="badge rounded-pill text-bg-success">Open</span>
-                            <span class="badge rounded-pill category-badge">Beach / Music Festival</span>
+
+                            {% if event.status == 'Open' %}
+                            <span class="badge rounded-pill text-bg-success">
+                                {{ event.status }}
+                            </span>
+                            {% elif event.status == 'Inactive' %}
+                            <span class="badge rounded-pill text-bg-secondary">
+                                {{ event.status }}
+                            </span>
+                            {% elif event.status == 'Sold out' %}
+                            <span class="badge rounded-pill text-bg-danger">
+                                {{ event.status }}
+                            </span>
+                            {% elif event.status == 'Cancelled' %}
+                            <span class="badge rounded-pill text-bg-dark">
+                                {{ event.status }}
+                            </span>
+                            {% else %}
+                            <span class="badge rounded-pill text-bg-secondary">
+                                {{ event.status }}
+                            </span>
+                            {% endif %}
+
+                            <span class="badge rounded-pill category-badge">
+                                {{ event.category }}
+                            </span>
+
                         </div>
-                        <h5 class="card-title">The Swell Sessions 2026</h5>
-                        <p class="meta"><strong>Date:</strong> 11 April 2026</p>
-                        <p class="meta"><strong>Location:</strong> Victoria</p>
-                        <p class="meta"><strong>Price:</strong> $99 AUD</p>
-                        <p class="description">A coastal live music event featuring beachside energy, relaxed vibes, and
-                            Australian artists.</p>
-                        <a href="/details" class="btn btn-dark mt-auto">View Details</a>
+
+                        <h5 class="card-title">
+                            {{ event.name }}
+                        </h5>
+
+                        <p class="meta">
+                            <strong>Date:</strong> {{ event.date }}
+                        </p>
+
+                        <p class="meta">
+                            <strong>Location:</strong> {{ event.location }}
+                        </p>
+
+                        <p class="meta">
+                            <strong>Price:</strong> ${{ event.price }} AUD
+                        </p>
+
+                        <p class="description">
+                            {{ event.description }}
+                        </p>
+
+                        <a href="{{ url_for('main.details', event_id=event.id) }}"
+                           class="btn btn-dark mt-auto">
+                            View Details
+                        </a>
+
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-6 col-xl-3">
-                <div class="card festival-card h-100">
-                    <img src="{{ url_for('static', filename='img/Gather Sounds.png') }}"
-                        class="card-img-top festival-poster" alt="Gather Sounds Poster">
-                    <div class="card-body d-flex flex-column">
-                        <div class="mb-2 d-flex gap-2 flex-wrap">
-                            <span class="badge rounded-pill text-bg-success">Open</span>
-                            <span class="badge rounded-pill category-badge">Indie / Rock</span>
-                        </div>
-                        <h5 class="card-title">Gather Sounds</h5>
-                        <p class="meta"><strong>Date:</strong> 10–11 April 2026</p>
-                        <p class="meta"><strong>Location:</strong> Adelaide</p>
-                        <p class="meta"><strong>Price:</strong> $129 AUD</p>
-                        <p class="description">A two-night live music festival featuring multiple artists and a vibrant
-                            atmosphere for music lovers.</p>
-                        <a href="/details" class="btn btn-dark mt-auto">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-xl-3">
-                <div class="card festival-card h-100">
-                    <img src="{{ url_for('static', filename='img/Melbourne Popfest.png') }}"
-                        class="card-img-top festival-poster" alt="Melbourne Popfest Poster">
-                    <div class="card-body d-flex flex-column">
-                        <div class="mb-2 d-flex gap-2 flex-wrap">
-                            <span class="badge rounded-pill text-bg-secondary">Inactive</span>
-                            <span class="badge rounded-pill category-badge">Indie / Pop</span>
-                        </div>
-                        <h5 class="card-title">Melbourne Popfest 2026</h5>
-                        <p class="meta"><strong>Date:</strong> April 2026</p>
-                        <p class="meta"><strong>Location:</strong> Melbourne</p>
-                        <p class="meta"><strong>Price:</strong> $89 AUD</p>
-                        <p class="description">An energetic pop-focused event showcasing emerging artists and a fun city
-                            festival atmosphere.</p>
-                        <a href="/details" class="btn btn-dark mt-auto">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-xl-3">
-                <div class="card festival-card h-100">
-                    <img src="{{ url_for('static', filename='img/Ability Fest.png') }}"
-                        class="card-img-top festival-poster" alt="Ability Fest Poster">
-                    <div class="card-body d-flex flex-column">
-                        <div class="mb-2 d-flex gap-2 flex-wrap">
-                            <span class="badge rounded-pill text-bg-secondary">Inactive</span>
-                            <span class="badge rounded-pill category-badge">Accessible Festival</span>
-                        </div>
-                        <h5 class="card-title">Ability Fest 2026</h5>
-                        <p class="meta"><strong>Date:</strong> June 2026</p>
-                        <p class="meta"><strong>Location:</strong> Melbourne</p>
-                        <p class="meta"><strong>Price:</strong> $75 AUD</p>
-                        <p class="description">Australia’s leading accessible music festival, focused on inclusion and a
-                            strong live experience.</p>
-                        <a href="/details" class="btn btn-dark mt-auto">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-xl-3">
-                <div class="card festival-card h-100">
-                    <img src="{{ url_for('static', filename='img/South Summit.png') }}"
-                        class="card-img-top festival-poster" alt="South Summit Poster">
-                    <div class="card-body d-flex flex-column">
-                        <div class="mb-2 d-flex gap-2 flex-wrap">
-                            <span class="badge rounded-pill text-bg-success">Open</span>
-                            <span class="badge rounded-pill category-badge">Tour</span>
-                        </div>
-                        <h5 class="card-title">South Summit Tour</h5>
-                        <p class="meta"><strong>Date:</strong> July 2026</p>
-                        <p class="meta"><strong>Location:</strong> Australia</p>
-                        <p class="meta"><strong>Price:</strong> $110 AUD</p>
-                        <p class="description">A national tour bringing live alternative music to major Australian
-                            cities.</p>
-                        <a href="/details" class="btn btn-dark mt-auto">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-xl-3">
-                <div class="card festival-card h-100">
-                    <img src="{{ url_for('static', filename='img/Riebl Tedsco Mcgill.png') }}"
-                        class="card-img-top festival-poster" alt="Riebl Tedsco Mcgill Poster">
-                    <div class="card-body d-flex flex-column">
-                        <div class="mb-2 d-flex gap-2 flex-wrap">
-                            <span class="badge rounded-pill text-bg-danger">Sold out</span>
-                            <span class="badge rounded-pill category-badge">Live Tour</span>
-                        </div>
-                        <h5 class="card-title">Riebl Tedsco Mcgill</h5>
-                        <p class="meta"><strong>Date:</strong> July 2026</p>
-                        <p class="meta"><strong>Location:</strong> Melbourne</p>
-                        <p class="meta"><strong>Price:</strong> $95 AUD</p>
-                        <p class="description">A live performance tour featuring a contemporary line-up and intimate
-                            concert venues.</p>
-                        <a href="/details" class="btn btn-dark mt-auto">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-xl-3">
-                <div class="card festival-card h-100">
-                    <img src="{{ url_for('static', filename='img/ILLY.png') }}" class="card-img-top festival-poster"
-                        alt="ILLY Poster">
-                    <div class="card-body d-flex flex-column">
-                        <div class="mb-2 d-flex gap-2 flex-wrap">
-                            <span class="badge rounded-pill text-bg-success">Inactive</span>
-                            <span class="badge rounded-pill category-badge">Hip Hop / Tour</span>
-                        </div>
-                        <h5 class="card-title">ILLY Tour</h5>
-                        <p class="meta"><strong>Date:</strong> June–July 2026</p>
-                        <p class="meta"><strong>Location:</strong> Australia</p>
-                        <p class="meta"><strong>Price:</strong> $120 AUD</p>
-                        <p class="description">A multi-city anniversary tour celebrating iconic hip hop releases and
-                            live fan favourites.</p>
-                        <a href="/details" class="btn btn-dark mt-auto">View Details</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-xl-3">
-                <div class="card festival-card h-100">
-                    <img src="{{ url_for('static', filename='img/Thundamentals.png') }}"
-                        class="card-img-top festival-poster" alt="Thundamentals Poster">
-                    <div class="card-body d-flex flex-column">
-                        <div class="mb-2 d-flex gap-2 flex-wrap">
-                            <span class="badge rounded-pill text-bg-dark">Cancelled</span>
-                            <span class="badge rounded-pill category-badge">Hip Hop / Tour</span>
-                        </div>
-                        <h5 class="card-title">Thundamentals Tour</h5>
-                        <p class="meta"><strong>Date:</strong> 2026</p>
-                        <p class="meta"><strong>Location:</strong> Australia</p>
-                        <p class="meta"><strong>Price:</strong> $115 AUD</p>
-                        <p class="description">A national tour bringing energetic hip hop performances to audiences
-                            across Australia.</p>
-                        <a href="/details" class="btn btn-dark mt-auto">View Details</a>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
 
         </div>
     </main>
 
     <footer class="footer-section py-4 text-center">
-        <p class="mb-0">© 2026 FestivalHub. All rights reserved.</p>
+        <p class="mb-0">
+            © 2026 FestivalHub. All rights reserved.
+        </p>
     </footer>
 
 </body>
