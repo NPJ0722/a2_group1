@@ -27,6 +27,12 @@ class User(db.Model, UserMixin):
         cascade='all, delete-orphan'
     )
 
+    created_events = db.relationship(
+        'Event',
+        backref='creator',
+        lazy=True
+    )
+
     def __repr__(self):
         return f'<User {self.email}>'
 
@@ -35,6 +41,12 @@ class Event(db.Model):
     __tablename__ = 'events'
 
     id = db.Column(db.Integer, primary_key=True)
+
+    creator_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id'),
+        nullable=True
+    )
 
     name = db.Column(db.String(150), nullable=False)
     category = db.Column(db.String(80), nullable=False)

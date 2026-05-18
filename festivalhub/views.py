@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, current_user
@@ -10,87 +11,88 @@ from .forms import LoginForm, RegisterForm, EventForm, BookingForm, CommentForm
 mainbp = Blueprint('main', __name__)
 
 
+def user_can_manage_event(event):
+    if not current_user.is_authenticated:
+        return False
+
+    if event.creator_id is None:
+        return True
+
+    return event.creator_id == current_user.id
+
+
+def fill_event_from_form(event, form):
+    event.name = form.name.data
+    event.category = form.category.data
+    event.date = request.form['date']
+    event.start_time = request.form['start_time']
+    event.end_time = request.form['end_time']
+    event.description = form.description.data
+    event.venue = form.venue.data
+    event.location = form.location.data
+    event.artist_lineup = form.artist_lineup.data
+    event.ticket_type = form.ticket_type.data
+    event.tickets_available = form.tickets_available.data
+    event.price = form.price.data
+    event.status = request.form['status']
+    event.image = form.image.data
+    event.acknowledgement_type = form.acknowledgement_type.data
+    event.traditional_custodians = form.traditional_custodians.data
+    event.acknowledgement_statement = form.acknowledgement_statement.data
+
+
+def populate_event_form(form, event):
+    form.name.data = event.name
+    form.category.data = event.category
+    form.description.data = event.description
+    form.venue.data = event.venue
+    form.location.data = event.location
+    form.artist_lineup.data = event.artist_lineup
+    form.ticket_type.data = event.ticket_type
+    form.tickets_available.data = event.tickets_available
+    form.price.data = event.price
+    form.image.data = event.image
+    form.acknowledgement_type.data = event.acknowledgement_type
+    form.traditional_custodians.data = event.traditional_custodians
+    form.acknowledgement_statement.data = event.acknowledgement_statement
+
+    try:
+        form.date.data = datetime.strptime(event.date, '%Y-%m-%d').date()
+    except Exception:
+        form.date.data = None
+
+    try:
+        form.start_time.data = datetime.strptime(event.start_time, '%H:%M').time()
+    except Exception:
+        form.start_time.data = None
+
+    try:
+        form.end_time.data = datetime.strptime(event.end_time, '%H:%M').time()
+    except Exception:
+        form.end_time.data = None
+
+
 @mainbp.route('/')
 def index():
     events = Event.query.all()
     return render_template('index.html', events=events)
 
 
-@mainbp.route('/seed-events')
-def seed_events():
-    Booking.query.delete()
-    Event.query.delete()
+@mainbp.route('/details', defaults={'event_id': None}, methods=['GET', 'POST'])
+@mainbp.route('/details/<int:event_id>', methods=['GET', 'POST'])
+def details(event_id):
+    if event_id is None:
+        event = Event.query.first()
+    else:
+        event = Event.query.get_or_404(event_id)
 
-    events = [
-        Event(name='The Swell Sessions 2026', category='Beach / Music Festival', date='2026-04-11',
-              start_time='15:00', end_time='22:00', description='A coastal live music event featuring beachside energy, relaxed vibes, and Australian artists.',
-              venue='Coastal Outdoor Stage', location='Victoria', artist_lineup='Australian live artists',
-              ticket_type='General Admission', tickets_available=100, price=99, status='Open',
-              image='The Swell Sessions.png', acknowledgement_type='Generic Acknowledgement',
-              traditional_custodians='Traditional Custodians of Victoria', acknowledgement_statement='FestivalHub acknowledges the Traditional Custodians of the land.'),
-
-        Event(name='Gather Sounds', category='Indie / Rock', date='2026-04-10',
-              start_time='17:00', end_time='23:00', description='A two-night live music festival featuring multiple artists and a vibrant atmosphere for music lovers.',
-              venue='Adelaide Uni Cloisters & Unibar', location='Adelaide', artist_lineup='Bad//Dreams, West Thebarton, The Empty Threats',
-              ticket_type='General Admission', tickets_available=120, price=129, status='Open',
-              image='Gather Sounds.png', acknowledgement_type='Generic Acknowledgement',
-              traditional_custodians='Kaurna People', acknowledgement_statement='FestivalHub acknowledges the Kaurna People of the Adelaide Plains.'),
-
-        Event(name='Melbourne Popfest 2026', category='Indie / Pop', date='2026-04-20',
-              start_time='14:00', end_time='21:00', description='An energetic pop-focused event showcasing emerging artists and a fun city festival atmosphere.',
-              venue='Melbourne Music Hall', location='Melbourne', artist_lineup='Emerging pop artists',
-              ticket_type='General Admission', tickets_available=80, price=89, status='Inactive',
-              image='Melbourne Popfest.png', acknowledgement_type='Generic Acknowledgement',
-              traditional_custodians='Wurundjeri People', acknowledgement_statement='FestivalHub acknowledges the Traditional Custodians of Melbourne.'),
-
-        Event(name='Ability Fest 2026', category='Accessible Festival', date='2026-06-15',
-              start_time='12:00', end_time='20:00', description='Australia’s leading accessible music festival, focused on inclusion and a strong live experience.',
-              venue='Accessible Outdoor Venue', location='Melbourne', artist_lineup='Inclusive live performers',
-              ticket_type='General Admission', tickets_available=90, price=75, status='Inactive',
-              image='Ability Fest.png', acknowledgement_type='Generic Acknowledgement',
-              traditional_custodians='Wurundjeri People', acknowledgement_statement='FestivalHub acknowledges the Traditional Custodians of the land.'),
-
-        Event(name='South Summit Tour', category='Tour', date='2026-07-01',
-              start_time='18:00', end_time='22:00', description='A national tour bringing live alternative music to major Australian cities.',
-              venue='National Tour Venues', location='Australia', artist_lineup='South Summit',
-              ticket_type='General Admission', tickets_available=110, price=110, status='Open',
-              image='South Summit.png', acknowledgement_type='Generic Acknowledgement',
-              traditional_custodians='Traditional Custodians of Australia', acknowledgement_statement='FestivalHub acknowledges Traditional Custodians across Australia.'),
-
-        Event(name='Riebl Tedsco Mcgill', category='Live Tour', date='2026-07-10',
-              start_time='19:00', end_time='22:00', description='A live performance tour featuring a contemporary line-up and intimate concert venues.',
-              venue='Melbourne Live Venue', location='Melbourne', artist_lineup='Riebl Tedsco Mcgill',
-              ticket_type='General Admission', tickets_available=0, price=95, status='Sold out',
-              image='Riebl Tedsco Mcgill.png', acknowledgement_type='Generic Acknowledgement',
-              traditional_custodians='Wurundjeri People', acknowledgement_statement='FestivalHub acknowledges the Traditional Custodians of Melbourne.'),
-
-        Event(name='ILLY Tour', category='Hip Hop / Tour', date='2026-06-20',
-              start_time='19:30', end_time='22:30', description='A multi-city anniversary tour celebrating iconic hip hop releases and live fan favourites.',
-              venue='Australian Tour Venues', location='Australia', artist_lineup='ILLY',
-              ticket_type='General Admission', tickets_available=100, price=120, status='Inactive',
-              image='ILLY.png', acknowledgement_type='Generic Acknowledgement',
-              traditional_custodians='Traditional Custodians of Australia', acknowledgement_statement='FestivalHub acknowledges Traditional Custodians across Australia.'),
-
-        Event(name='Thundamentals Tour', category='Hip Hop / Tour', date='2026-08-01',
-              start_time='19:00', end_time='22:00', description='A national tour bringing energetic hip hop performances to audiences across Australia.',
-              venue='Australian Tour Venues', location='Australia', artist_lineup='Thundamentals',
-              ticket_type='General Admission', tickets_available=60, price=115, status='Cancelled',
-              image='Thundamentals.png', acknowledgement_type='Generic Acknowledgement',
-              traditional_custodians='Traditional Custodians of Australia', acknowledgement_statement='FestivalHub acknowledges Traditional Custodians across Australia.')
-    ]
-
-    db.session.add_all(events)
-    db.session.commit()
-
-    return redirect(url_for('main.booking_select'))
-
-
-@mainbp.route('/details', methods=['GET', 'POST'])
-def details():
-    event = Event.query.first()
     comment_form = CommentForm()
 
     if request.method == 'POST':
+
+        if not current_user.is_authenticated and request.form.get('guest_confirm') != '1':
+            return redirect(url_for('main.login', next=url_for('main.details', event_id=event.id)))
+
         new_comment = Comment(
             event_id=event.id,
             user_name=request.form['user_name'],
@@ -100,7 +102,7 @@ def details():
         db.session.add(new_comment)
         db.session.commit()
 
-        return redirect(url_for('main.details'))
+        return redirect(url_for('main.details', event_id=event.id))
 
     comments = Comment.query.filter_by(event_id=event.id).all()
 
@@ -108,52 +110,108 @@ def details():
         'event-details.html',
         event=event,
         comment_form=comment_form,
-        comments=comments
+        comments=comments,
+        can_manage_event=user_can_manage_event(event)
     )
+
+
+@mainbp.route('/delete-comment/<int:comment_id>', methods=['POST'])
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    event_id = comment.event_id
+
+    db.session.delete(comment)
+    db.session.commit()
+
+    return redirect(url_for('main.details', event_id=event_id))
+
 
 @mainbp.route('/create', methods=['GET', 'POST'])
 def create_event():
+    if not current_user.is_authenticated:
+        return redirect(url_for('main.login', next=url_for('main.create_event')))
+
     form = EventForm()
 
     if request.method == 'POST':
         new_event = Event(
-            name=form.name.data,
-            category=form.category.data,
-            date=request.form['date'],
-            start_time=request.form['start_time'],
-            end_time=request.form['end_time'],
-            description=form.description.data,
-            venue=form.venue.data,
-            location=form.location.data,
-            artist_lineup=form.artist_lineup.data,
-            ticket_type=form.ticket_type.data,
-            tickets_available=form.tickets_available.data,
-            price=form.price.data,
-            status=request.form['status'],
-            image=form.image.data,
-            acknowledgement_type=form.acknowledgement_type.data,
-            traditional_custodians=form.traditional_custodians.data,
-            acknowledgement_statement=form.acknowledgement_statement.data
+            creator_id=current_user.id
         )
+
+        fill_event_from_form(new_event, form)
 
         db.session.add(new_event)
         db.session.commit()
-        return redirect(url_for('main.index'))
 
-    return render_template('create-update-event.html', form=form)
+        return redirect(url_for('main.details', event_id=new_event.id))
+
+    return render_template(
+        'create-update-event.html',
+        form=form,
+        page_title='Create Event',
+        submit_label='Create Event',
+        is_update=False
+    )
+
+
+@mainbp.route('/update/<int:event_id>', methods=['GET', 'POST'])
+def update_event(event_id):
+    event = Event.query.get_or_404(event_id)
+
+    if not user_can_manage_event(event):
+        return redirect(url_for('main.details', event_id=event.id))
+
+    form = EventForm()
+
+    if request.method == 'POST':
+        fill_event_from_form(event, form)
+        db.session.commit()
+
+        return redirect(url_for('main.details', event_id=event.id))
+
+    populate_event_form(form, event)
+
+    return render_template(
+        'create-update-event.html',
+        form=form,
+        event=event,
+        page_title='Update Event',
+        submit_label='Update Event',
+        is_update=True
+    )
+
+
+@mainbp.route('/cancel-event/<int:event_id>', methods=['POST'])
+def cancel_event(event_id):
+    event = Event.query.get_or_404(event_id)
+
+    if not user_can_manage_event(event):
+        return redirect(url_for('main.details', event_id=event.id))
+
+    event.status = 'Cancelled'
+    db.session.commit()
+
+    return redirect(url_for('main.details', event_id=event.id))
 
 
 @mainbp.route('/booking')
 def booking_select():
     events = Event.query.all()
     show_login_modal = request.args.get('login_required') == '1'
-    return render_template('booking-select.html', events=events, show_login_modal=show_login_modal)
+    return render_template(
+        'booking-select.html',
+        events=events,
+        show_login_modal=show_login_modal
+    )
 
 
 @mainbp.route('/booking/<int:event_id>', methods=['GET', 'POST'])
 def booking(event_id):
     form = BookingForm()
     event = Event.query.get_or_404(event_id)
+
+    if event.status == 'Cancelled':
+        return redirect(url_for('main.details', event_id=event.id))
 
     if request.method == 'POST':
         ticket_quantity = int(request.form['ticket_quantity'])
@@ -166,7 +224,7 @@ def booking(event_id):
         total_price = (ticket_price * ticket_quantity) + booking_fee
 
         new_booking = Booking(
-            user_id=1,
+            user_id=current_user.id if current_user.is_authenticated else 1,
             event_id=event.id,
             ticket_quantity=ticket_quantity,
             ticket_price=ticket_price,
@@ -200,35 +258,42 @@ def login():
     next_page = request.args.get('next', '/')
     error_message = None
 
-    if login_form.validate_on_submit():
-        user = User.query.filter_by(email=login_form.email.data).first()
+    if request.method == 'POST':
+        form_type = request.form.get('form_type')
 
-        if user and check_password_hash(user.password, login_form.password.data):
-            login_user(user)
-            return redirect(next_page)
-        else:
-            error_message = "Incorrect email or password."
+        if form_type == 'login':
+            email = request.form.get('email')
+            password = request.form.get('password')
 
-    if register_form.validate_on_submit():
-        existing_user = User.query.filter_by(email=register_form.email.data).first()
+            user = User.query.filter_by(email=email).first()
 
-        if existing_user:
-            error_message = "This email is already registered."
-        else:
-            new_user = User(
-                first_name=register_form.first_name.data,
-                last_name=register_form.last_name.data,
-                phone=register_form.phone.data,
-                email=register_form.email.data,
-                password=generate_password_hash(register_form.password.data),
-                street_address=register_form.street_address.data
-            )
+            if user and check_password_hash(user.password, password):
+                login_user(user)
+                return redirect(next_page)
+            else:
+                error_message = "Incorrect email or password."
 
-            db.session.add(new_user)
-            db.session.commit()
-            login_user(new_user)
+        elif form_type == 'register':
+            email = request.form.get('email')
+            existing_user = User.query.filter_by(email=email).first()
 
-            return redirect(next_page)
+            if existing_user:
+                error_message = "This email is already registered."
+            else:
+                new_user = User(
+                    first_name=request.form.get('first_name'),
+                    last_name=request.form.get('last_name'),
+                    phone=request.form.get('phone'),
+                    email=email,
+                    password=generate_password_hash(request.form.get('password')),
+                    street_address=request.form.get('street_address')
+                )
+
+                db.session.add(new_user)
+                db.session.commit()
+                login_user(new_user)
+
+                return redirect(next_page)
 
     return render_template(
         'login.html',
