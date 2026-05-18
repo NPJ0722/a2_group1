@@ -82,18 +82,29 @@
                             Login
                         </h2>
 
+                        {% if error_message %}
+                        <div class="alert alert-danger">
+                            {{ error_message }}
+                        </div>
+                        {% endif %}
+
                         <p class="text-muted mb-4">
                             Login to continue using your FestivalHub account.
                         </p>
 
-                        <form>
+                        <form method="POST" action="{{ url_for('main.login') }}">
+                            <input type="hidden" name="form_type" value="login">
 
                             <div class="mb-4">
                                 <label class="form-label fw-semibold">
                                     Email Address
                                 </label>
 
-                                <input type="email" class="form-control form-control-lg" placeholder="Enter your email">
+                                <input type="email"
+                                       name="email"
+                                       class="form-control form-control-lg"
+                                       placeholder="Enter your email"
+                                       required>
                             </div>
 
                             <div class="mb-4">
@@ -101,13 +112,16 @@
                                     Password
                                 </label>
 
-                                <input type="password" class="form-control form-control-lg"
-                                    placeholder="Enter password">
+                                <input type="password"
+                                       name="password"
+                                       class="form-control form-control-lg"
+                                       placeholder="Enter password"
+                                       required>
                             </div>
 
-                            <a href="{{ next_page }}" class="btn btn-dark btn-lg w-100">
+                            <button type="submit" class="btn btn-dark btn-lg w-100">
                                 Continue
-                            </a>
+                            </button>
 
                         </form>
 
@@ -128,7 +142,8 @@
                             Register a FestivalHub account to book tickets and create events.
                         </p>
 
-                        <form>
+                        <form method="POST" action="{{ url_for('main.login') }}">
+                            <input type="hidden" name="form_type" value="register">
 
                             <div class="row">
 
@@ -137,8 +152,11 @@
                                         First Name
                                     </label>
 
-                                    <input type="text" class="form-control form-control-lg"
-                                        placeholder="Enter first name">
+                                    <input type="text"
+                                           name="first_name"
+                                           class="form-control form-control-lg"
+                                           placeholder="Enter first name"
+                                           required>
                                 </div>
 
                                 <div class="col-md-6 mb-4">
@@ -146,8 +164,11 @@
                                         Last Name
                                     </label>
 
-                                    <input type="text" class="form-control form-control-lg"
-                                        placeholder="Enter last name">
+                                    <input type="text"
+                                           name="last_name"
+                                           class="form-control form-control-lg"
+                                           placeholder="Enter last name"
+                                           required>
                                 </div>
 
                             </div>
@@ -159,8 +180,11 @@
                                         Phone Number
                                     </label>
 
-                                    <input type="text" class="form-control form-control-lg"
-                                        placeholder="Enter phone number">
+                                    <input type="text"
+                                           name="phone"
+                                           class="form-control form-control-lg"
+                                           placeholder="Enter phone number"
+                                           required>
                                 </div>
 
                                 <div class="col-md-6 mb-4">
@@ -168,7 +192,11 @@
                                         Email Address
                                     </label>
 
-                                    <input type="email" class="form-control form-control-lg" placeholder="Enter email">
+                                    <input type="email"
+                                           name="email"
+                                           class="form-control form-control-lg"
+                                           placeholder="Enter email"
+                                           required>
                                 </div>
 
                             </div>
@@ -178,7 +206,11 @@
                                     Street Address
                                 </label>
 
-                                <input type="text" class="form-control form-control-lg" placeholder="Enter address">
+                                <input type="text"
+                                       name="street_address"
+                                       class="form-control form-control-lg"
+                                       placeholder="Enter address"
+                                       required>
                             </div>
 
                             <div class="mb-4">
@@ -186,13 +218,16 @@
                                     Password
                                 </label>
 
-                                <input type="password" class="form-control form-control-lg"
-                                    placeholder="Create password">
+                                <input type="password"
+                                       name="password"
+                                       class="form-control form-control-lg"
+                                       placeholder="Create password"
+                                       required>
                             </div>
 
-                            <a href="{{ next_page }}" class="btn btn-dark btn-lg w-100">
+                            <button type="submit" class="btn btn-dark btn-lg w-100">
                                 Create Account & Continue
-                            </a>
+                            </button>
 
                         </form>
 
