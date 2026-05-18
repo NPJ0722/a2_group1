@@ -85,13 +85,31 @@ def seed_events():
     return redirect(url_for('main.booking_select'))
 
 
-@mainbp.route('/details')
+@mainbp.route('/details', methods=['GET', 'POST'])
 def details():
     event = Event.query.first()
     comment_form = CommentForm()
-    comments = Comment.query.all()
-    return render_template('event-details.html', event=event, comment_form=comment_form, comments=comments)
 
+    if request.method == 'POST':
+        new_comment = Comment(
+            event_id=event.id,
+            user_name=request.form['user_name'],
+            comment_text=request.form['comment_text']
+        )
+
+        db.session.add(new_comment)
+        db.session.commit()
+
+        return redirect(url_for('main.details'))
+
+    comments = Comment.query.filter_by(event_id=event.id).all()
+
+    return render_template(
+        'event-details.html',
+        event=event,
+        comment_form=comment_form,
+        comments=comments
+    )
 
 @mainbp.route('/create', methods=['GET', 'POST'])
 def create_event():
@@ -180,6 +198,7 @@ def login():
     login_form = LoginForm()
     register_form = RegisterForm()
     next_page = request.args.get('next', '/')
+    error_message = None
 
     if login_form.validate_on_submit():
         user = User.query.filter_by(email=login_form.email.data).first()
@@ -187,24 +206,37 @@ def login():
         if user and check_password_hash(user.password, login_form.password.data):
             login_user(user)
             return redirect(next_page)
+        else:
+            error_message = "Incorrect email or password."
 
     if register_form.validate_on_submit():
-        new_user = User(
-            first_name=register_form.first_name.data,
-            last_name=register_form.last_name.data,
-            phone=register_form.phone.data,
-            email=register_form.email.data,
-            password=generate_password_hash(register_form.password.data),
-            street_address=register_form.street_address.data
-        )
+        existing_user = User.query.filter_by(email=register_form.email.data).first()
 
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user)
+        if existing_user:
+            error_message = "This email is already registered."
+        else:
+            new_user = User(
+                first_name=register_form.first_name.data,
+                last_name=register_form.last_name.data,
+                phone=register_form.phone.data,
+                email=register_form.email.data,
+                password=generate_password_hash(register_form.password.data),
+                street_address=register_form.street_address.data
+            )
 
-        return redirect(next_page)
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user)
 
-    return render_template('login.html', login_form=login_form, register_form=register_form, next_page=next_page)
+            return redirect(next_page)
+
+    return render_template(
+        'login.html',
+        login_form=login_form,
+        register_form=register_form,
+        next_page=next_page,
+        error_message=error_message
+    )
 
 
 @mainbp.route('/login-booking', methods=['GET', 'POST'])
