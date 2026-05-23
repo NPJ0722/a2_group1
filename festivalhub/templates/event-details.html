@@ -147,7 +147,7 @@
                     </a>
                     {% else %}
                     <button type="button" class="btn btn-dark btn-lg" data-bs-toggle="modal"
-                        data-bs-target="#commentLoginModal">
+                        data-bs-target="#bookingLoginModal">
                         Book Tickets
                     </button>
                     {% endif %}
@@ -354,17 +354,42 @@
                 </div>
 
                 <div class="modal-footer">
-
-                    <button type="submit" form="commentForm" name="guest_confirm" value="1"
-                        class="btn btn-outline-dark">
+                    <a href="{{ url_for('main.booking', event_id=event.id) }}" class="btn btn-outline-dark">
                         OK
-                    </button>
+                    </a>
 
-                    <a href="{{ url_for('main.login', next=url_for('main.details', event_id=event.id)) }}"
+                    <a href="{{ url_for('main.login', next=url_for('main.booking', event_id=event.id)) }}"
                         class="btn btn-dark">
                         Login
                     </a>
+                </div>
 
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bookingLoginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0">
+
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Login Required</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    You need to login before making a booking.
+                </div>
+
+                <div class="modal-footer">
+                    <a href="{{ url_for('main.booking', event_id=event.id) }}" class="btn btn-outline-dark">
+                        OK
+                    </a>
+
+                    <a href="{{ url_for('main.login', next=url_for('main.booking', event_id=event.id)) }}"
+                        class="btn btn-dark">
+                        Login
+                    </a>
                 </div>
 
             </div>
