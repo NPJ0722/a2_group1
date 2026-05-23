@@ -113,6 +113,7 @@ class Booking(db.Model):
     ticket_price = db.Column(db.Float, nullable=False)
     booking_fee = db.Column(db.Float, default=0.0)
     total_price = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String(30), default='Confirmed')
 
     booking_date = db.Column(db.DateTime, default=datetime.utcnow)
 

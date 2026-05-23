@@ -204,9 +204,18 @@ def booking_select():
         show_login_modal=show_login_modal
     )
 
+@mainbp.route('/cancel-booking/<int:booking_id>', methods=['POST'])
+def cancel_booking(booking_id):
+    booking = Booking.query.get_or_404(booking_id)
+
+    booking.status = 'Cancelled'
+    db.session.commit()
+
+    return redirect(url_for('main.bookings'))
 
 @mainbp.route('/booking/<int:event_id>', methods=['GET', 'POST'])
 def booking(event_id):
+
     form = BookingForm()
     event = Event.query.get_or_404(event_id)
 
@@ -224,12 +233,13 @@ def booking(event_id):
         total_price = (ticket_price * ticket_quantity) + booking_fee
 
         new_booking = Booking(
-            user_id=current_user.id if current_user.is_authenticated else 1,
+            user_id=current_user.id,
             event_id=event.id,
             ticket_quantity=ticket_quantity,
             ticket_price=ticket_price,
             booking_fee=booking_fee,
-            total_price=total_price
+            total_price=total_price,
+            status='Confirmed'
         )
 
         event.tickets_available -= ticket_quantity
