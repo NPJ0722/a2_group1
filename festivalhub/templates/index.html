@@ -17,62 +17,47 @@
         Discover Australia’s best live music events with FestivalHub.
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold fs-3" href="/">FestivalHub</a>
+    <nav class="navbar-custom bg-white border-bottom sticky-top">
+        <div class="container-fluid px-4 py-3">
 
-            <div class="navbar-collapse">
+            <div class="d-flex align-items-center justify-content-between">
+                <a class="navbar-brand fw-bold fs-3 text-decoration-none text-dark" href="/">
+                    FestivalHub
+                </a>
+
+                <label for="nav-toggle" class="hamburger-btn d-lg-none">
+                    ☰
+                </label>
+            </div>
+
+            <input type="checkbox" id="nav-toggle" class="nav-toggle">
+
+            <div class="nav-menu mt-3 mt-lg-0">
                 <ul class="navbar-nav mx-auto gap-lg-3">
-
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">
-                            Festivals
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/create">
-                            Create Event
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/booking">
-                            Booking
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/bookings">
-                            Booking History
-                        </a>
-                    </li>
-
+                    <li class="nav-item"><a class="nav-link active" href="/">Festivals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/create">Create Event</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/booking">Booking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/bookings">Booking History</a></li>
                 </ul>
 
-                <div class="d-flex align-items-center gap-3 nav-right-group">
-                    <div class="search-box d-flex align-items-center px-3">
-                        <i class="bi bi-search me-2"></i>
-                        <input type="text" placeholder="Search festivals">
+                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                    {% if current_user.is_authenticated %}
+                    <div class="text-center small">
+                        <i class="bi bi-person-circle fs-4 d-block"></i>
+                        <span>{{ current_user.first_name }}</span>
                     </div>
-
-                    <a href="#" class="icon-link">
-                        <i class="bi bi-globe2"></i>
-                    </a>
-
-                    <span class="small text-nowrap d-none d-md-inline">
-                        Australia (AUD)
-                    </span>
-
-                    <a href="/login" class="btn btn-outline-dark rounded-pill px-3">
-                        <i class="bi bi-person-circle me-1"></i> Login
-                    </a>
 
                     <a href="/logout" class="btn btn-outline-dark rounded-pill px-3">
                         <i class="bi bi-box-arrow-right me-1"></i> Logout
                     </a>
+                    {% else %}
+                    <a href="/login" class="btn btn-outline-dark rounded-pill px-3">
+                        <i class="bi bi-person-circle me-1"></i> Login
+                    </a>
+                    {% endif %}
                 </div>
             </div>
+
         </div>
     </nav>
 
@@ -106,13 +91,42 @@
             </h2>
 
             <div class="d-flex justify-content-center flex-wrap gap-2 mt-3">
-                <span class="badge rounded-pill px-3 py-2 text-bg-dark">All</span>
-                <span class="badge rounded-pill px-3 py-2 category-badge">Music Festival</span>
-                <span class="badge rounded-pill px-3 py-2 category-badge">Indie</span>
-                <span class="badge rounded-pill px-3 py-2 category-badge">Pop</span>
-                <span class="badge rounded-pill px-3 py-2 category-badge">Hip Hop</span>
-                <span class="badge rounded-pill px-3 py-2 category-badge">Tour</span>
-                <span class="badge rounded-pill px-3 py-2 category-badge">Accessible Festival</span>
+
+                <a href="{{ url_for('main.index', category='All') }}" class="badge rounded-pill px-3 py-2 text-decoration-none border-0
+       {% if selected_category == 'All' %}text-bg-dark{% else %}category-badge{% endif %}">
+                    All
+                </a>
+
+                <a href="{{ url_for('main.index', category='Music Festival') }}" class="badge rounded-pill px-3 py-2 text-decoration-none border-0
+       {% if selected_category == 'Music Festival' %}text-bg-dark{% else %}category-badge{% endif %}">
+                    Music Festival
+                </a>
+
+                <a href="{{ url_for('main.index', category='Indie') }}" class="badge rounded-pill px-3 py-2 text-decoration-none border-0
+       {% if selected_category == 'Indie' %}text-bg-dark{% else %}category-badge{% endif %}">
+                    Indie
+                </a>
+
+                <a href="{{ url_for('main.index', category='Pop') }}" class="badge rounded-pill px-3 py-2 text-decoration-none border-0
+       {% if selected_category == 'Pop' %}text-bg-dark{% else %}category-badge{% endif %}">
+                    Pop
+                </a>
+
+                <a href="{{ url_for('main.index', category='Hip Hop') }}" class="badge rounded-pill px-3 py-2 text-decoration-none border-0
+       {% if selected_category == 'Hip Hop' %}text-bg-dark{% else %}category-badge{% endif %}">
+                    Hip Hop
+                </a>
+
+                <a href="{{ url_for('main.index', category='Tour') }}" class="badge rounded-pill px-3 py-2 text-decoration-none border-0
+       {% if selected_category == 'Tour' %}text-bg-dark{% else %}category-badge{% endif %}">
+                    Tour
+                </a>
+
+                <a href="{{ url_for('main.index', category='Accessible Festival') }}" class="badge rounded-pill px-3 py-2 text-decoration-none border-0
+       {% if selected_category == 'Accessible Festival' %}text-bg-dark{% else %}category-badge{% endif %}">
+                    Accessible Festival
+                </a>
+
             </div>
         </div>
 
@@ -125,8 +139,11 @@
 
                     {% if event.image %}
                     <img src="{{ url_for('static', filename='img/' + event.image) }}"
-                         class="card-img-top festival-poster"
-                         alt="{{ event.name }} Poster">
+                        class="card-img-top rounded-top-4 event-card-img" alt="{{ event.name }} Poster">
+                    {% else %}
+                    <div class="event-card-img bg-light d-flex align-items-center justify-content-center rounded-top-4">
+                        <span class="text-muted">No image uploaded</span>
+                    </div>
                     {% endif %}
 
                     <div class="card-body d-flex flex-column">
@@ -181,8 +198,7 @@
                             {{ event.description }}
                         </p>
 
-                        <a href="{{ url_for('main.details', event_id=event.id) }}"
-                           class="btn btn-dark mt-auto">
+                        <a href="{{ url_for('main.details', event_id=event.id) }}" class="btn btn-dark mt-auto">
                             View Details
                         </a>
 

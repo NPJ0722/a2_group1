@@ -1,12 +1,14 @@
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 
 from . import db
 from .models import User, Event, Booking, Comment
 from .forms import LoginForm, RegisterForm, EventForm, BookingForm, CommentForm
-
+import os
+from werkzeug.utils import secure_filename
+from sqlalchemy import func
 
 mainbp = Blueprint('main', __name__)
 
@@ -34,12 +36,28 @@ def fill_event_from_form(event, form):
     event.ticket_type = form.ticket_type.data
     event.tickets_available = form.tickets_available.data
     event.price = form.price.data
-    event.status = request.form['status']
-    event.image = form.image.data
+
+    # Status is controlled by the system, not by the create/update form
+    if not event.status:
+        event.status = 'Open'
+
+    # Save uploaded image file into static/img and store filename in DB
+    if form.image.data:
+        filename = secure_filename(form.image.data.filename)
+
+        upload_path = os.path.join(
+            current_app.root_path,
+            'static',
+            'img',
+            filename
+        )
+
+        form.image.data.save(upload_path)
+        event.image = filename
+
     event.acknowledgement_type = form.acknowledgement_type.data
     event.traditional_custodians = form.traditional_custodians.data
     event.acknowledgement_statement = form.acknowledgement_statement.data
-
 
 def populate_event_form(form, event):
     form.name.data = event.name
@@ -57,25 +75,37 @@ def populate_event_form(form, event):
     form.acknowledgement_statement.data = event.acknowledgement_statement
 
     try:
-        form.date.data = datetime.strptime(event.date, '%Y-%m-%d').date()
+        form.date.data = datetime.datetime.strptime(event.date, '%Y-%m-%d').date()
     except Exception:
         form.date.data = None
 
     try:
-        form.start_time.data = datetime.strptime(event.start_time, '%H:%M').time()
+        form.start_time.data = datetime.datetime.strptime(event.start_time, '%H:%M').time()
     except Exception:
         form.start_time.data = None
 
     try:
-        form.end_time.data = datetime.strptime(event.end_time, '%H:%M').time()
+        form.end_time.data = datetime.datetime.strptime(event.end_time, '%H:%M').time()
     except Exception:
         form.end_time.data = None
 
 
 @mainbp.route('/')
 def index():
-    events = Event.query.all()
-    return render_template('index.html', events=events)
+    selected_category = request.args.get('category', 'All')
+
+    if selected_category == 'All':
+        events = Event.query.all()
+    else:
+        events = Event.query.filter(
+            Event.category.ilike(f'%{selected_category}%')
+        ).all()
+
+    return render_template(
+        'index.html',
+        events=events,
+        selected_category=selected_category
+    )
 
 
 @mainbp.route('/details', defaults={'event_id': None}, methods=['GET', 'POST'])
@@ -133,12 +163,14 @@ def create_event():
 
     form = EventForm()
 
-    if request.method == 'POST':
+    if form.validate_on_submit():
         new_event = Event(
             creator_id=current_user.id
         )
 
         fill_event_from_form(new_event, form)
+
+        new_event.status = 'Open'
 
         db.session.add(new_event)
         db.session.commit()
@@ -180,6 +212,17 @@ def update_event(event_id):
         is_update=True
     )
 
+@mainbp.route('/inactive-event/<int:event_id>')
+@login_required
+def inactive_event(event_id):
+
+    event = Event.query.get_or_404(event_id)
+
+    event.status = 'Inactive'
+
+    db.session.commit()
+
+    return redirect(url_for('main.details', event_id=event.id))
 
 @mainbp.route('/cancel-event/<int:event_id>', methods=['POST'])
 def cancel_event(event_id):
