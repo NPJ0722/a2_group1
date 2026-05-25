@@ -29,7 +29,7 @@
                 <ul class="navbar-nav mx-auto gap-lg-3">
                     <li class="nav-item"><a class="nav-link" href="/">Festivals</a></li>
                     <li class="nav-item"><a class="nav-link active" href="/create">Create Event</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login-booking">Booking</a></li>
+                    <a class="nav-link" href="/booking">Booking</a>
                     <li class="nav-item"><a class="nav-link" href="/bookings">Booking History</a></li>
                 </ul>
 
@@ -48,13 +48,30 @@
                         Australia (AUD)
                     </span>
 
+                    {% if current_user.is_authenticated %}
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="text-center small">
+                            <i class="bi bi-person-circle fs-4 d-block"></i>
+                            <span>{{ current_user.first_name }}</span>
+                        </div>
+
+                        <a href="/logout" class="btn btn-outline-dark rounded-pill px-3">
+                            <i class="bi bi-box-arrow-right me-1"></i>
+                            Logout
+                        </a>
+
+                    </div>
+
+                    {% else %}
+
                     <a href="/login" class="btn btn-outline-dark rounded-pill px-3">
-                        <i class="bi bi-person-circle me-1"></i> Login
+                        <i class="bi bi-person-circle me-1"></i>
+                        Login
                     </a>
 
-                    <a href="/logout" class="btn btn-outline-dark rounded-pill px-3">
-                        <i class="bi bi-box-arrow-right me-1"></i> Logout
-                    </a>
+                    {% endif %}
 
                 </div>
 
@@ -83,7 +100,7 @@
 
                     <div class="card-body p-4 p-md-5">
 
-                        <form method="POST">
+                        <form method="POST" enctype="multipart/form-data">
 
                             {{ form.hidden_tag() }}
 
@@ -165,46 +182,90 @@
                                     </h3>
 
                                     <p class="text-muted mb-4">
-                                        Select how this event will acknowledge the Traditional Custodians of the land
-                                        where the event takes place.
+                                        FestivalHub encourages organisers to respectfully recognise the Traditional
+                                        Custodians
+                                        of the land where events are held. Different acknowledgement approaches may be
+                                        used
+                                        depending on the scale and cultural context of the event.
                                     </p>
+
+                                    <div class="alert alert-light border rounded-4 mb-4">
+                                        <h6 class="fw-bold mb-2">Guidance</h6>
+                                        <p class="small mb-2">
+                                            An Acknowledgement of Country can be delivered by anyone to recognise
+                                            Traditional Custodians and their continuing connection to Country.
+                                        </p>
+                                        <p class="small mb-0">
+                                            A Welcome to Country is different and should only be delivered by
+                                            Traditional Owners
+                                            or recognised Elders of that Country.
+                                        </p>
+                                    </div>
 
                                     <div class="row g-4">
 
                                         <div class="col-md-6">
                                             <label class="form-label">Acknowledgement Type</label>
                                             {{ form.acknowledgement_type(class="form-select form-select-lg") }}
+
+                                            <div class="form-text mt-2">
+                                                Choose between no acknowledgement, a general acknowledgement,
+                                                or an enhanced acknowledgement with more location-specific detail.
+                                            </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <label class="form-label">Traditional Custodians</label>
                                             {{ form.traditional_custodians(class="form-control form-control-lg") }}
+
+                                            <div class="form-text mt-2">
+                                                Example: Brisbane – Turrbal and Jagera/Yuggera peoples;
+                                                Melbourne – Wurundjeri people of the Kulin Nation;
+                                                Sydney – Gadigal people of the Eora Nation.
+                                            </div>
                                         </div>
 
                                         <div class="col-12">
                                             <label class="form-label">Acknowledgement Statement</label>
-                                            {{ form.acknowledgement_statement(class="form-control", rows="4") }}
+                                            {{ form.acknowledgement_statement(class="form-control", rows="5") }}
+
+                                            <div class="form-text mt-2">
+                                                Write a respectful statement that reflects the event location,
+                                                audience, and purpose.
+                                            </div>
                                         </div>
 
                                         <div class="col-12">
+                                            <div class="acknowledgement-note p-4 rounded-4 mt-3">
 
-                                            <div class="acknowledgement-note p-3 rounded-3">
+                                                <h5 class="fw-bold mb-3">
+                                                    Creating a Meaningful Acknowledgement
+                                                </h5>
 
-                                                <strong>Preview shown on Event Details page</strong>
+                                                <ul class="mb-3">
+                                                    <li>Research the correct Traditional Custodians for the event
+                                                        location.</li>
+                                                    <li>Avoid generic or tokenistic wording.</li>
+                                                    <li>Recognise ongoing connection to land, waters, culture, and
+                                                        community.</li>
+                                                    <li>Use respectful wording suitable for the audience and event
+                                                        context.</li>
+                                                    <li><strong>Generic acknowledgement:</strong> suitable for general
+                                                        events when the organiser wants a respectful but simple
+                                                        statement.</li>
 
-                                                <p class="mb-2 mt-2">
-                                                    This acknowledgement will be displayed clearly within the event
-                                                    details so visitors can recognise the Traditional Custodians of the
-                                                    event location.
-                                                </p>
+                                                    <li><strong>Enhanced acknowledgement:</strong> should include the
+                                                        specific Traditional Custodians, location, and a more thoughtful
+                                                        connection to Country.</li>
+                                                </ul>
 
                                                 <p class="text-muted small mb-0">
-                                                    Enhanced acknowledgements should be specific, respectful, and
-                                                    supported by research.
+                                                    This acknowledgement will be displayed on the Event Details page so
+                                                    visitors
+                                                    can recognise the Traditional Custodians connected to the event.
                                                 </p>
 
                                             </div>
-
                                         </div>
 
                                     </div>
@@ -216,7 +277,7 @@
                             <section class="mb-5">
 
                                 <h3 class="fw-bold mb-4">
-                                    Ticketing and Status
+                                    Ticketing
                                 </h3>
 
                                 <div class="row g-4">
@@ -233,18 +294,16 @@
 
                                     <div class="col-md-4">
                                         <label class="form-label">Ticket Price</label>
-                                        {{ form.price(class="form-control form-control-lg") }}
+                                        {{ form.price(
+                                        class="form-control form-control-lg",
+                                        type="number",
+                                        min="0",
+                                        step="0.01",
+                                        placeholder="Enter ticket price",
+                                        title="Please enter a valid ticket price"
+                                        ) }}
                                     </div>
 
-                                    <div class="mb-4">
-                                        <label for="status" class="form-label">Event Status</label>
-                                        <select class="form-select" id="status" name="status" required>
-                                            <option value="Open">Open</option>
-                                            <option value="Inactive">Inactive</option>
-                                            <option value="Sold out">Sold out</option>
-                                            <option value="Cancelled">Cancelled</option>
-                                        </select>
-                                    </div>
 
                                 </div>
 
@@ -259,8 +318,12 @@
                                 <div class="row g-4">
 
                                     <div class="col-md-12">
-                                        <label class="form-label">Image URL</label>
+                                        <label class="form-label">Upload Event Image</label>
                                         {{ form.image(class="form-control form-control-lg") }}
+
+                                        <div class="form-text">
+                                            Upload an event poster image. Accepted formats: JPG, JPEG, PNG, WEBP.
+                                        </div>
                                     </div>
 
                                 </div>

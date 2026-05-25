@@ -9,7 +9,8 @@ from wtforms import (
     SubmitField
 )
 from wtforms.fields import DateField, TimeField
-from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional
+from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional, Regexp
+from flask_wtf.file import FileField, FileAllowed
 
 
 class LoginForm(FlaskForm):
@@ -39,12 +40,20 @@ class RegisterForm(FlaskForm):
 
     phone = StringField(
         'Phone Number',
-        validators=[DataRequired(), Length(max=30)]
-    )
+        validators=[
+            DataRequired(),
+            Regexp(r'^04\d{8}$', message='Please enter a valid Australian mobile number, e.g. 04xxxxxxxx.')
+        ]
+    )   
 
     email = StringField(
         'Email Address',
-        validators=[DataRequired(), Email(), Length(max=120)]
+        validators=[
+            DataRequired(),
+            Email(),
+            Regexp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', message='Please enter a valid email address, e.g. name@example.com.'),
+            Length(max=120)
+        ]
     )
 
     password = PasswordField(
@@ -154,12 +163,17 @@ class EventForm(FlaskForm):
 
     price = FloatField(
         'Ticket Price',
-        validators=[DataRequired(), NumberRange(min=0)]
+        validators=[
+            DataRequired(message='Please enter a valid number for ticket price.'),
+            NumberRange(min=0, message='Ticket price must be 0 or above.')
+        ]
     )
 
-    image = StringField(
-        'Image URL',
-        validators=[Optional(), Length(max=255)]
+    image = FileField(
+        'Upload Event Image',
+        validators=[
+            FileAllowed(['jpg', 'jpeg', 'png', 'webp'], 'Images only!')
+        ]
     )
 
     submit = SubmitField('Create Event')

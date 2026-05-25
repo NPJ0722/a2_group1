@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>FestivalHub - Logout</title>
@@ -14,10 +15,30 @@
         You have logged out of FestivalHub.
     </div>
 
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold fs-3" href="/">FestivalHub</a>
+
+            <div class="navbar-collapse">
+                <ul class="navbar-nav mx-auto gap-lg-3">
+                    <li class="nav-item"><a class="nav-link" href="/">Festivals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/create">Create Event</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/booking">Booking</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/bookings">Booking History</a></li>
+                </ul>
+
+                <a href="/login" class="btn btn-outline-dark rounded-pill px-3">
+                    Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
     <section class="container py-5 text-center">
         <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width: 600px;">
             <div class="card-body p-5">
                 <h1 class="fw-bold mb-3">Logged Out</h1>
+
                 <p class="text-muted mb-4">
                     You have successfully logged out of your account.
                 </p>
@@ -30,4 +51,5 @@
     </section>
 
 </body>
+
 </html>
